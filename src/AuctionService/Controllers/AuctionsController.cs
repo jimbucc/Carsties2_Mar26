@@ -1,10 +1,9 @@
-using System;
 using AuctionService.Data;
 using AuctionService.DTOs;
 using AuctionService.Entities;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 
 namespace AuctionService.Controllers;
@@ -12,23 +11,20 @@ namespace AuctionService.Controllers;
 public class AuctionsController(AuctionDbContext context, IMapper mapper) : BaseApiController
 {
     [HttpGet]
-    public async Task<ActionResult<List<AuctionDto>>> GetAllAuctions()
+    public async Task<ActionResult<List<AuctionDto>>> GetAllAuctions(string date)
     {
-        var auctions = await context.Auctions
-            .Include(x => x.Item)
-            .OrderBy(x => x.Item.Make)
-            .ToListAsync();
+        var query = context.Auctions.OrderBy(x => x.Item.Make).AsQueryable();
+        if(!string.IsNullOrEmpty(date))
+        {
+            query = query.Where(x => x.UpdatedAt.CompareTo(DateTime.Parse(date).ToUniversalTime()) > 0);
+        }
 
-        return mapper.Map<List<AuctionDto>>(auctions);
+        return await query.ProjectTo<AuctionDto>(mapper.ConfigurationProvider).ToListAsync();
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<AuctionDto>> GetAuctionById(Guid id)
     {
-        // var auction = await context.Auctions
-        //     .Include(x => x.Item)
-        //     .FirstOrDefaultAsync(x => x.Id == id);
-
         var auction = await GetAuctionFromDb(id);
 
         if (auction == null)
@@ -58,10 +54,6 @@ public class AuctionsController(AuctionDbContext context, IMapper mapper) : Base
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateAuction(Guid id, UpdateAuctionDto updateAuctionDto)
     {
-        // var auction = await context.Auctions
-        //     .Include(x => x.Item)
-        //     .FirstOrDefaultAsync(x => x.Id == id);
-
         var auction = await GetAuctionFromDb(id);
 
         if (auction == null)
