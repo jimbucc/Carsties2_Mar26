@@ -1,0 +1,25 @@
+'use client'
+
+import Image from "next/image"
+import { useState } from "react"
+
+type Props = {
+    imageUrl: string
+}
+
+const CarImage = ({imageUrl}: Props) => {
+    const [loading, setloading] = useState(true)
+  return (
+    <Image
+      src={imageUrl}
+      alt="Car"
+      fill
+      className={`object-cover duration-700 ease-in-out
+        ${loading ? 'opacity-0 scale-110' : 'opacity-100 scale-100'}`}
+      priority
+      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+      onLoad={() => setloading(false)}
+    />
+  )
+}
+export default CarImage
