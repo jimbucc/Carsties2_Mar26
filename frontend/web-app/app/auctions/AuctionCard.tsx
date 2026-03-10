@@ -1,6 +1,8 @@
 import CountdownTimer from "./CountdownTimer"
 import CarImage from "./CarImage"
 import { Auction } from "@/types"
+import { Button } from "@/components/ui/button"
+import { ArrowUpIcon } from "lucide-react"
 
 type Props = {
     auction: Auction
@@ -23,6 +25,12 @@ const AuctionCard = ({auction}: Props) => {
         <h3 className="text-gray-700 text-sm">
           {auction.make} {auction.model}
         </h3>
+        
+      <Button variant="default" className="bg-blue-700">Button</Button>
+      <Button variant="outline" size="icon" aria-label="Submit">
+        <ArrowUpIcon />
+      </Button>
+
         <p className="font-semibold text-sm">{auction.year}</p>
       </div>
     </a>

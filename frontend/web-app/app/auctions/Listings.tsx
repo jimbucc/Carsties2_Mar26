@@ -1,5 +1,6 @@
 import { Auction, PagedResult } from "@/types";
 import AuctionCard from "./AuctionCard";
+import AppPagination from "../components/AppPagination";
 
 const getData = async (): Promise<PagedResult<Auction>> => {
     const res = await fetch("http://localhost:6001/search?pageSize=10")
@@ -15,6 +16,8 @@ const Listings = async () => {
         {data && data.results.map(auction => (
             <AuctionCard key={auction.id} auction={auction}/>
         ))}
+
+        
     </div>
   )
 }
