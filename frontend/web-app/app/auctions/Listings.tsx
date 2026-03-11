@@ -1,21 +1,71 @@
-import { Auction, PagedResult } from "@/types";
-import AuctionCard from "./AuctionCard";
+'use client'
 
-const getData = async (): Promise<PagedResult<Auction>> => {
-    const res = await fetch("http://localhost:6001/search?pageSize=10")
-    if(!res.ok) throw new Error('Failed to fetch data')
+import AuctionCard from './AuctionCard'
+import AppPagination from '../components/AppPagination'
+import { getData } from '../actions/auctionActions'
+import { useEffect, useState } from 'react'
+import { Auction, PagedResult } from '@/types'
+import Filters from './Filters'
+import { useParamsStore } from '@/hooks/useParamsStore'
+import { useShallow } from 'zustand/shallow'
+import qs from 'query-string'
+import EmptyFilter from '../components/EmptyFilter'
 
-    return res.json();
-}
+const Listings = () => {
+  const [data, setData] = useState<PagedResult<Auction>>()
 
-const Listings = async () => {
-    const data = await getData();
+  // useShallow to optimize re-renders
+  const params = useParamsStore(
+    useShallow((state) => ({
+      pageNumber: state.pageNumber,
+      pageSize: state.pageSize,
+      searchTerm: state.searchTerm,
+      orderBy: state.orderBy,
+      filterBy: state.filterBy,
+    })),
+  )
+
+  const setParams = useParamsStore((state) => state.setParams)
+  const url = qs.stringifyUrl(
+    { url: '', query: params },
+    { skipEmptyString: true },
+  )
+
+  const setPageNumber = (pageNumber: number) => {
+    setParams({ pageNumber })
+  }
+
+  useEffect(() => {
+    getData(url).then((data) => {
+      setData(data)
+    })
+  }, [url])
+
+  if (!data) return <h3>Loading...</h3>
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {data && data.results.map(auction => (
-            <AuctionCard key={auction.id} auction={auction}/>
-        ))}
-    </div>
+    <>
+      <Filters />
+      {data.totalCount === 0 ? (
+        <EmptyFilter showReset />
+      ) : (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {data &&
+              data.results.map((auction) => (
+                <AuctionCard key={auction.id} auction={auction} />
+              ))}
+          </div>
+          <div className="flex justify-center mt-4">
+            <AppPagination
+              pageChanged={setPageNumber}
+              currentPage={params.pageNumber}
+              pageCount={data.pageCount}
+            />
+          </div>
+        </>
+      )}
+    </>
   )
 }
 export default Listings
