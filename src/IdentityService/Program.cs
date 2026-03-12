@@ -35,6 +35,9 @@ try
         });
     }
 
+    app.UseStaticFiles();
+    app.UseRouting();
+
     app.Run();
 }
 catch (Exception ex) when (ex is not HostAbortedException)
@@ -46,6 +49,8 @@ finally
     Log.Information("Shut down complete");
     Log.CloseAndFlush();
 }
+
+
 
 static string Summary(LicenseUsageSummary usage)
 {
