@@ -2,6 +2,8 @@
 
 import { Auction } from '@/types'
 import { Table, TableBody, TableCell, TableRow } from 'flowbite-react'
+import { numberWithCommas } from '@/lib/numberWithCommas'
+
 
 type Props = {
   auction: Auction
@@ -38,7 +40,7 @@ export default function DetailedSpecs({ auction }: Props) {
           <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
             Mileage
           </TableCell>
-          <TableCell>{auction.mileage}</TableCell>
+          <TableCell>{numberWithCommas(auction.mileage)}</TableCell>
         </TableRow>
         <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
           <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">

@@ -4,16 +4,15 @@ import AuctionCard from './AuctionCard'
 import AppPagination from '../components/AppPagination'
 import { getData } from '../actions/auctionActions'
 import { useEffect, useState } from 'react'
-import { Auction, PagedResult } from '@/types'
 import Filters from './Filters'
 import { useParamsStore } from '@/hooks/useParamsStore'
 import { useShallow } from 'zustand/shallow'
 import qs from 'query-string'
 import EmptyFilter from '../components/EmptyFilter'
+import { useAuctionStore } from '@/hooks/useAuctionStore'
 
 const Listings = () => {
-  const [data, setData] = useState<PagedResult<Auction>>()
-
+  const [loading, setLoading] = useState(true)
   // useShallow to optimize re-renders
   const params = useParamsStore(
     useShallow((state) => ({
@@ -26,6 +25,14 @@ const Listings = () => {
       winner: state.winner
     })),
   )
+
+  const data = useAuctionStore(useShallow(state => ({
+    auctions: state.auctions,
+    totalCount: state.totalCount,
+    pageCount: state.pageCount
+  })));
+
+  const setData = useAuctionStore(state => state.setData)
 
   const setParams = useParamsStore((state) => state.setParams)
   const url = qs.stringifyUrl(
@@ -40,10 +47,11 @@ const Listings = () => {
   useEffect(() => {
     getData(url).then((data) => {
       setData(data)
+      setLoading(false)
     })
-  }, [url])
+  }, [url, setData])
 
-  if (!data) return <h3>Loading...</h3>
+  if (loading) return <h3>Loading...</h3>
 
   return (
     <>
@@ -54,7 +62,7 @@ const Listings = () => {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {data &&
-              data.results.map((auction) => (
+              data.auctions.map((auction) => (
                 <AuctionCard key={auction.id} auction={auction} />
               ))}
           </div>

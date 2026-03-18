@@ -13,7 +13,7 @@ const orderButtons = [
 
 const filterButtons = [
     { label: 'Live auctions', icon: GiFlame, value: 'live'},
-    { label: 'Ending < 6 hourse', icon: GiFinishLine, value: 'endingSoon'},
+    { label: 'Ending < 6 hours', icon: GiFinishLine, value: 'endingSoon'},
     { label: 'Completed', icon: BsStopwatchFill, value: 'finished'}
 ]
 
@@ -28,14 +28,14 @@ const Filters = () => {
       <div>
         <span className="uppercase text-sm text-gray-500 mr-2">Filter by</span>
         <ButtonGroup outline className="shadow-md">
-          {filterButtons.map(({label, icon: Icon, value}) => (
+          {filterButtons.map(({ label, icon: Icon, value }) => (
             <Button
               key={value}
               onClick={() => setParams({ filterBy: value })}
               color={`${filterBy === value ? 'red' : 'gray'}`}
-              className="focus:ring-0"
+              className="focus:ring-0 text-[10px] sm:text-xs"
             >
-                <Icon className="mr-3 h-4 w-4"/>
+              <Icon className="mr-3 h-4 w-4" />
               {label}
             </Button>
           ))}
@@ -46,14 +46,14 @@ const Filters = () => {
       <div>
         <span className="uppercase text-sm text-gray-500 mr-2">Order by</span>
         <ButtonGroup outline className="shadow-md">
-          {orderButtons.map(({label, icon: Icon, value}) => (
+          {orderButtons.map(({ label, icon: Icon, value }) => (
             <Button
               key={value}
               onClick={() => setParams({ orderBy: value })}
               color={`${orderBy === value ? 'red' : 'gray'}`}
-              className="focus:ring-0"
+              className="focus:ring-0 text-xs md:text-sm"
             >
-                <Icon className="mr-3 h-4 w-4"/>
+              <Icon className="mr-3 h-4 w-4" />
               {label}
             </Button>
           ))}
@@ -67,7 +67,7 @@ const Filters = () => {
               key={index}
               onClick={() => setParams({ pageSize: value })}
               color={`${pageSize === value ? 'red' : 'gray'}`}
-              className="focus:ring-0"
+              className="focus:ring-0  text-xs md:text-sm"
             >
               {value}
             </Button>
