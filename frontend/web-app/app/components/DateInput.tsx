@@ -1,11 +1,11 @@
-import DatePicker from 'react-datepicker'
+import DatePicker, { DatePickerProps } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { useController, UseControllerProps } from 'react-hook-form'
 
 type Props = {
   label: string
   type?: string
-} & UseControllerProps & DatePicker
+} & UseControllerProps & DatePickerProps
 
 const DateInput = (props: Props) => {
   const { field, fieldState } = useController({ ...props })
